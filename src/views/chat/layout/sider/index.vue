@@ -1,9 +1,8 @@
 <script setup lang='ts'>
 import type { CSSProperties } from 'vue'
-import { computed, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { NButton, NLayoutSider, useDialog } from 'naive-ui'
 import List from './List.vue'
-import Footer from './Footer.vue'
 import { useAppStore, useChatStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { PromptStore, SvgIcon } from '@/components/common'
@@ -62,6 +61,9 @@ const mobileSafeArea = computed(() => {
   return {}
 })
 
+const Setting = defineAsyncComponent(() => import('@/components/common/Setting/index.vue'))
+const showSettingView = ref(false)
+
 watch(
   isMobile,
   (val) => {
@@ -105,13 +107,18 @@ watch(
           <NButton @click="handleClearAll">
             <SvgIcon icon="ri:close-circle-line" />
           </NButton>
+
+          <NButton @click="showSettingView = true">
+            <SvgIcon icon="ri:settings-line" />
+          </NButton>
         </div>
       </main>
-      <Footer />
+      <!-- <Footer /> -->
     </div>
   </NLayoutSider>
   <template v-if="isMobile">
     <div v-show="!collapsed" class="fixed inset-0 z-40 w-full h-full bg-black/40" @click="handleUpdateCollapsed" />
   </template>
   <PromptStore v-model:visible="show" />
+  <Setting v-if="showSettingView" v-model:visible="showSettingView" />
 </template>
